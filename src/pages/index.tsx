@@ -1,5 +1,6 @@
-import { FormEvent, useState } from 'react'
 import Image from 'next/image'
+import { FormEvent, useState } from 'react'
+import { toast } from 'react-toastify'
 import usersAvatarExampleImg from '../assets/users-avatar-example.png'
 import appPreviewImg from '../assets/app-nlw-copa-preview.png'
 import iconCheckImg from '../assets/icon-check.svg'
@@ -28,10 +29,12 @@ export default function Home({ poolCount, guessCount, userCount }: HomeProps) {
       await navigator.clipboard.writeText(code)
       setPoolTitle('')
 
-      alert('Bolão criado com sucesso, o código foi copiado para área de transferência')
+      toast.success(`Bolão criado com sucesso! O código ${code} foi copiado para área de transferência`, {
+        autoClose: 8000
+      })
 
     } catch (error) {
-      alert('Fala ao criar o bolão, tente novamente!')
+      toast.error('Falha ao criar o bolão, tente novamente!')
     }
   }
 

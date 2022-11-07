@@ -5,3 +5,14 @@
 body {
   -webkit-font-smoothing: antialiased;
 }
+
+:root {
+  --toastify-color-dark: #202024;
+  --toastify-color-success: #129E57;
+  --toastify-color-error: #ca4435;
+
+  --toastify-toast-width: 430px;
+  --toastify-font-family: 'Roboto', sans-serif;
+
+  --toastify-text-color-dark: #fff;
+}
