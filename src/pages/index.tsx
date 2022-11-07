@@ -1,10 +1,18 @@
+import { FormEvent, useState } from 'react'
 import Image from 'next/image'
 import usersAvatarExampleImg from '../assets/users-avatar-example.png'
 import appPreviewImg from '../assets/app-nlw-copa-preview.png'
 import iconCheckImg from '../assets/icon-check.svg'
 import logoImg from '../assets/logo.svg'
+import { api } from '../lib/axios'
 
-export default function Home() {
+interface HomeProps {
+  poolCount: number
+  guessCount: number
+  userCount: number
+}
+
+export default function Home({ poolCount, guessCount, userCount }: HomeProps) {
   return (
     <div className="max-w-[1124px] h-screen items-center grid grid-cols-2 gap-28 mx-auto">
       <main>
@@ -18,7 +26,7 @@ export default function Home() {
 
           <strong className="text-gray-100">
             <span className="text-ignite-500 text-xl">
-              +12.592
+              +{userCount}
             </span>
             {' '}pessoas já estão usando
           </strong>
@@ -26,10 +34,10 @@ export default function Home() {
 
         <form className="flex gap-2 mt-10">
           <input
-            className="bg-gray-800 flex-1 px-6 py-4 text-sm border border-gray-600 rounded text-[#C4C4CC]"
+            className="bg-gray-800 flex-1 px-6 py-4 text-sm border border-gray-600 rounded text-gray-100"
             type="text"
-            required
             placeholder="Qual o nome do seu bolão?"
+            required
           />
           <button
             type="submit"
@@ -46,7 +54,7 @@ export default function Home() {
           <div className="flex items-center gap-6">
             <Image src={iconCheckImg} alt="" />
             <div className="flex flex-col">
-              <span className="text-2xl font-bold">+2.034</span>
+              <span className="text-2xl font-bold">+{poolCount}</span>
               <span>Bolões criados</span>
             </div>
           </div>
@@ -56,7 +64,7 @@ export default function Home() {
           <div className="flex items-center gap-6">
             <Image src={iconCheckImg} alt="" />
             <div className="flex flex-col">
-              <span className="text-2xl font-bold">+192.847</span>
+              <span className="text-2xl font-bold">+{guessCount}</span>
               <span>Palpites enviados</span>
             </div>
           </div>
@@ -70,4 +78,24 @@ export default function Home() {
       />
     </div>
   )
+}
+
+export const getServerSideProps = async () => {
+  const [
+    poolCountResponse,
+    guessCountResponse,
+    userCountResponse
+  ] = await Promise.all([
+    api.get('/pools/count'),
+    api.get('/guesses/count'),
+    api.get('/users/count')
+  ])
+
+  return {
+    props: {
+      poolCount: poolCountResponse.data.count,
+      guessCount: guessCountResponse.data.count,
+      userCount: userCountResponse.data.count
+    }
+  }
 }
