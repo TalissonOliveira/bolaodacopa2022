@@ -13,6 +13,28 @@ interface HomeProps {
 }
 
 export default function Home({ poolCount, guessCount, userCount }: HomeProps) {
+  const [poolTitle, setPoolTitle] = useState('')
+
+  async function handleCreatePool(event: FormEvent) {
+    event.preventDefault()
+
+    try {
+      const response = await api.post('/pools', {
+        title: poolTitle
+      })
+
+      const { code } = response.data
+
+      await navigator.clipboard.writeText(code)
+      setPoolTitle('')
+
+      alert('Bolão criado com sucesso, o código foi copiado para área de transferência')
+
+    } catch (error) {
+      alert('Fala ao criar o bolão, tente novamente!')
+    }
+  }
+
   return (
     <div className="max-w-[1124px] h-screen items-center grid grid-cols-2 gap-28 mx-auto">
       <main>
@@ -32,11 +54,13 @@ export default function Home({ poolCount, guessCount, userCount }: HomeProps) {
           </strong>
         </div>
 
-        <form className="flex gap-2 mt-10">
+        <form onSubmit={handleCreatePool} className="flex gap-2 mt-10">
           <input
             className="bg-gray-800 flex-1 px-6 py-4 text-sm border border-gray-600 rounded text-gray-100"
             type="text"
             placeholder="Qual o nome do seu bolão?"
+            value={poolTitle}
+            onChange={event => setPoolTitle(event.target.value)}
             required
           />
           <button
